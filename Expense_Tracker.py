@@ -49,13 +49,57 @@ def Validate_Expense(data,partial):
 
     
 
-    
+    cleaned={}
 
-
+    #Validate Title
+    if 'title' in data:
+        if not isinstance(data['title'],str):
+            return None,({'Error':'title must be in Text Form'},400)
+        title=data['title'].strip()
+        if not title:
+            return None,({'Error': 'Title Must required'},400)
         
+        cleaned['title'] = title
 
 
+    #Validate Amount
+    if 'amount' in data:
+        amount=data['amount']
+        if isinstance(amount,bool) or not isinstance(amount,(int,float)):
+            return None,({'Error': 'Amount must e Int or Float'},400)
 
+        if amount<=0:
+            return None,({'Error':'Must be Greater than zero'},400)
 
+        cleaned['amount']=amount
+
+    #Validate category
     
+    if 'category' in data:
+        if not isinstance(data['category'],str):
+            return None,({'Error': 'Category Must be In Text'},400)
+        category=data['category'].strip()
+        if not category:
+            return None,({'Error': 'Must be required Catregory'},400)
+        cleaned['category']=category
+
+
+    #Validate Date
+    if 'date' in data:
+        date_string=data['date']
+
+        if not isinstance(date_string,str) or not date_string:
+            return None,({'Error': 'Date is required as YYYY-MM-DD'},400)
+        try:
+            cleaned['date']=datetime.strptime(
+                date_string,'%Y-%m-%d'
+            ).date()
+
+        except ValueError:
+            return None,({
+                'Error': 'Invalid date-- Use YYYY-MM-DD format'
+            },400)
+
+        return cleaned,None
+
 
