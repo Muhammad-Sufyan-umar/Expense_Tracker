@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='Expense_detail.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///Expense_detail.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATION']=False
 
 db=SQLAlchemy(app)
@@ -19,8 +19,7 @@ class Expense_Tracker(db.Model):
     title=db.Column(db.String(120),unique=True,nullable=False)
     amount=db.Column(db.Float,nullable=False)
     category=db.Column(db.String(120),nullable=False)
-    date=db.Column(db.Date,nullale=False)
-
+    date=db.Column(db.Date,nullable=False)
 
 #=====================================.>
 #Validation request Data
@@ -101,5 +100,30 @@ def Validate_Expense(data,partial):
             },400)
 
         return cleaned,None
+
+
+#==============================================================>
+#Create Expense
+#==============================================================>
+
+@app.route('/expense',methods=['POST'])
+def create_expenses():
+    data=request.get_json(silent=True)
+
+    cleaned,error=Validate_Expense(data)
+
+    if error:
+        return error
+    new_expense=Expense_Tracker(**cleaned)
+    db.session.add(new_expense)
+
+    try:
+        db.session.commit()
+        return {'ID': new_expense.id},201
+    except IntegrityError:
+        db.session.rollback()
+        return {'Error': 'Data with this title already exixts'},409
+
+
 
 
