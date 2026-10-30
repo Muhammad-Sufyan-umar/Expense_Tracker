@@ -25,7 +25,7 @@ class Expense_Tracker(db.Model):
 #Validation request Data
 #=====================================.>
 
-def Validate_Expense(data,partial):
+def Validate_Expense(data,partial=False):
     if not isinstance(data,dict) or not data:
         return None,({'Error': 'Json required data or in dict'},400)
 
@@ -79,7 +79,7 @@ def Validate_Expense(data,partial):
             return None,({'Error': 'Category Must be In Text'},400)
         category=data['category'].strip()
         if not category:
-            return None,({'Error': 'Must be required Catregory'},400)
+            return None,({'Error': 'Must be required Category'},400)
         cleaned['category']=category
 
 
@@ -122,13 +122,13 @@ def create_expenses():
         return {'ID': new_expense.id},201
     except IntegrityError:
         db.session.rollback()
-        return {'Error': 'Data with this title already exixts'},409
+        return {'Error': 'Data with this title already exists'},409
 
 #=========================================================>
 #GET ALL
 #===========================================================>
 
-@app.route('/expenses',methods=['GET'])
+@app.route('/expense',methods=['GET'])
 def Get_All():
     all_data=Expense_Tracker.query.all()
     output=[]
@@ -150,7 +150,7 @@ def Get_All():
 #GET BY ID
 #==========================================================>
 
-@app.route('/expenses/<int:id>',methods=['GET'])
+@app.route('/expense/<int:id>',methods=['GET'])
 def Get_By_Id(id):
     expense=db.get_or_404(Expense_Tracker,id)
 
@@ -167,7 +167,7 @@ def Get_By_Id(id):
 #PATACH
 #========================================================>
 
-@app.route('/expenses/<int:id>',methods=['PATCH'])
+@app.route('/expense/<int:id>',methods=['PATCH'])
 
 def Update_Expense(id):
     expense=db.get_or_404(Expense_Tracker,id)
@@ -196,12 +196,15 @@ def Update_Expense(id):
         db.session.rollback()
         return {'Error': 'Data with this title already exists'},409
 
+#==========================================================>
+#DELETE
+#==========================================================>
 
-    
+@app.route('/expense/<int:id>',methods=['DELETE'])
+def Delete_Expense(id):
+    expense=db.get_or_404(Expense_Tracker,id)
 
+    db.session.delete(expense)
+    db.session.commit()
 
-
-
-
-
-
+    return {'Message': 'expense deleted Successfully'},200
