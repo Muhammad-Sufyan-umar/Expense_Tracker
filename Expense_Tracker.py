@@ -124,6 +124,29 @@ def create_expenses():
         db.session.rollback()
         return {'Error': 'Data with this title already exixts'},409
 
+#=========================================================>
+#GET ALL
+#===========================================================>
+
+@app.route('/expenses',methods=['GET'])
+def Get_All():
+    all_data=Expense_Tracker.query.all()
+    output=[]
+
+    for data in all_data:
+        new_data={
+            'ID':data.id,
+            'Title':data.title,
+            'Amount':data.amount,
+            'Category': data.category,
+            'Date': data.date.isoformat()
+        }
+
+        output.append(new_data)
+
+    return {'Json': output}
+
+
 
 
 
