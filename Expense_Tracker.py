@@ -163,4 +163,45 @@ def Get_By_Id(id):
     },200
 
 
+#==========================================================>
+#PATACH
+#========================================================>
+
+@app.route('/expenses/<int:id>',methods=['PATCH'])
+
+def Update_Expense(id):
+    expense=db.get_or_404(Expense_Tracker,id)
+    data=request.get_json(silent=True)
+
+    cleaned,error=Validate_Expense(data,partial=True)
+
+    if error:
+        return error
+
+    #Validate Everything Before Updating
+    for fields,value in cleaned.items():
+        setattr(expense,fields,value)
+
+    try:
+        db.session.commit()
+        return {
+            'Message': 'Expense Updated Successfully',
+            'ID': expense.id,
+            'Title': expense.title,
+            'Amount': expense.amount,
+            'Category': expense.category,
+            'Date': expense.date.isoformat()
+        },200
+    except IntegrityError:
+        db.session.rollback()
+        return {'Error': 'Data with this title already exists'},409
+
+
+    
+
+
+
+
+
+
 
