@@ -146,7 +146,21 @@ def Get_All():
 
     return {'Json': output}
 
+#==========================================================>
+#GET BY ID
+#==========================================================>
 
+@app.route('/expenses/<int:id>',methods=['GET'])
+def Get_By_Id(id):
+    expense=db.get_or_404(Expense_Tracker,id)
+
+    return {
+        'id':expense.id,
+        'title':expense.title,
+        'amount':expense.amount,
+        'category':expense.category,
+        'date':expense.date.isoformat()
+    },200
 
 
 
