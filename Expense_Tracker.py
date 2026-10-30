@@ -130,21 +130,27 @@ def create_expenses():
 
 @app.route('/expense',methods=['GET'])
 def Get_All():
+    category=request.args.get('category')
+    
     all_data=Expense_Tracker.query.all()
-    output=[]
-
-    for data in all_data:
-        new_data={
+    
+    if category:
+        all_data=Expense_Tracker.query.filter_by(category=category).all() 
+    
+    output=[
+    
+        {
             'ID':data.id,
             'Title':data.title,
             'Amount':data.amount,
             'Category': data.category,
             'Date': data.date.isoformat()
         }
+        for data in all_data
+        ]
 
-        output.append(new_data)
 
-    return {'Json': output}
+    return {'Json': output},200
 
 #==========================================================>
 #GET BY ID
