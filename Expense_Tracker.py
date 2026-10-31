@@ -131,12 +131,30 @@ def create_expenses():
 @app.route('/expense',methods=['GET'])
 def Get_All():
     category=request.args.get('category')
+    date_str=request.args.get('date')
     
+    #Date Validation
+
+    if date_str:
+        try:
+            date=datetime.strptime(
+                date_str,'%Y-%m-%d'
+            ).date()
+        except ValueError:
+            return {'Error':'Date must be in YYYY-MM-DD format'},400
+    else:
+        date=None
+
+
     all_data=Expense_Tracker.query.all()
     
     if category:
         all_data=Expense_Tracker.query.filter_by(category=category).all() 
-    
+
+    if date:
+        all_data=Expense_Tracker.query.filter_by(date=date).all()
+
+
     output=[
     
         {
