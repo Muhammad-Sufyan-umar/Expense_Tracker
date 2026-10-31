@@ -131,7 +131,9 @@ def create_expenses():
 @app.route('/expense',methods=['GET'])
 def Get_All():
     category=request.args.get('category')
+    sort=request.args.get('sort')
     date_str=request.args.get('date')
+
     
     #Date Validation
 
@@ -154,7 +156,13 @@ def Get_All():
     if date:
         all_data=Expense_Tracker.query.filter_by(date=date).all()
 
+    if sort=='asc':
+        all_data=Expense_Tracker.query.order_by(Expense_Tracker.amount.asc()).all()
 
+    if sort=='desc':
+        all_data=Expense_Tracker.query.order_by(Expense_Tracker.amount.desc()).all()
+
+    
     output=[
     
         {
