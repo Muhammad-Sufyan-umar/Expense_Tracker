@@ -148,19 +148,30 @@ def Get_All():
         date=None
 
 
-    all_data=Expense_Tracker.query.all()
+    query=Expense_Tracker.query
     
     if category:
-        all_data=Expense_Tracker.query.filter_by(category=category).all() 
+        query=query.filter_by(category=category) 
 
     if date:
-        all_data=Expense_Tracker.query.filter_by(date=date).all()
+        query=query.filter_by(date=date)
 
     if sort=='asc':
-        all_data=Expense_Tracker.query.order_by(Expense_Tracker.amount.asc()).all()
+        query=query.order_by(Expense_Tracker.amount.asc())
 
     if sort=='desc':
-        all_data=Expense_Tracker.query.order_by(Expense_Tracker.amount.desc()).all()
+        query=query.order_by(Expense_Tracker.amount.desc())
+
+    #Pagination Parameters
+    page=request.args.get('page',default=1,type=int)
+    limit=request.args.get('limit',default=5,type=int)
+    if page is None or page<1:
+        return {'Error': 'Page must be between 1 and 100'},400
+
+    if limit is None or limit < 1 or limit>100:
+        return {'Error': 'Limit must be between 1 and 100'},400
+
+    all_data=query.offset((page-1)*limit).limit(limit).all()
 
     
     output=[
