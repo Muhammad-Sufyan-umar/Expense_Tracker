@@ -1,8 +1,8 @@
 # Expense Tracker API
 
-A simple Expense Tracker Api built in Python using Flask.
+A simple Expense Tracker Api built in Python with Flask.
 
-this project allow user to manage and record his expenses through a simple dictionaries format and this will display output in Json format.
+This project allow user to manage and record his expenses through a simple dictionaries format and it will display output in Json format.
 
 ## Features
 
@@ -28,7 +28,7 @@ this project allow user to manage and record his expenses through a simple dicti
 
 ## Purpose of Project
 
-this project was created to practice Python with Flask and understand how Flask and python work together in simple real world.
+This project was created to practice Python with Flask and understand how Flask and python work together in simple real world.
 
 ### Future Improvement
 
